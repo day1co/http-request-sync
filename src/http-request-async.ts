@@ -4,13 +4,13 @@ import https from 'https';
 import type { URL } from 'url';
 import type { HttpResponse } from './http-response';
 
-function log(...args: Array<any>) {
+function log(...args: Array<unknown>) {
   process.stdout.write('[HttpRequestAsync] ' + args.map((it) => JSON.stringify(it)).join() + '\n');
 }
 
 /** minimal version to compare with `httpRequestSync()` */
 export async function httpRequestAsync(options: string | URL | RequestOptions): Promise<HttpResponse> {
-  return new Promise<any>((resolve, reject) => {
+  return new Promise<HttpResponse>((resolve, reject) => {
     log(options);
 
     const isHttps =
@@ -31,7 +31,7 @@ export async function httpRequestAsync(options: string | URL | RequestOptions): 
       });
       res.on('end', () => {
         const { statusCode, statusMessage, headers } = res;
-        return resolve({ data, statusCode, statusMessage, headers });
+        return resolve({ data, statusCode: statusCode ?? 0, statusMessage: statusMessage ?? '', headers });
       });
     }
 

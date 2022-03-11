@@ -1,5 +1,6 @@
 import type { IncomingMessage, RequestOptions } from 'http';
-import { request } from 'http';
+import http from 'http';
+import https from 'https';
 import type { URL } from 'url';
 import type { HttpResponse } from './http-response';
 
@@ -9,9 +10,14 @@ function log(...args: Array<any>) {
 
 /** minimal version to compare with `httpRequestSync()` */
 export async function httpRequestAsync(options: string | URL | RequestOptions): Promise<HttpResponse> {
-  log(options);
   return new Promise<any>((resolve, reject) => {
-    const req = request(options, (res: IncomingMessage) => {
+    log(options);
+
+    const isHttps =
+      (typeof options === 'string' && options.startsWith('https')) ||
+      (typeof options === 'object' && options.protocol === 'https');
+
+    function callback(res: IncomingMessage) {
       log('statusCode:', res.statusCode);
       log('headers:', res.headers);
       res.setEncoding('utf8');
@@ -27,7 +33,10 @@ export async function httpRequestAsync(options: string | URL | RequestOptions): 
         const { statusCode, statusMessage, headers } = res;
         return resolve({ data, statusCode, statusMessage, headers });
       });
-    });
+    }
+
+    const req = isHttps ? https.request(options, callback) : http.request(options, callback);
+
     req.on('error', (error) => {
       log('error!', error);
       return reject(error);

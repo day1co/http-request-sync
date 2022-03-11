@@ -3,7 +3,7 @@ import type { RequestOptions } from 'http';
 import type { URL } from 'url';
 import type { HttpResponse } from './http-response';
 
-function log(...args: Array<any>) {
+function log(...args: Array<unknown>) {
   process.stdout.write('[HttpRequestSync] ' + args.map((it) => JSON.stringify(it)).join() + '\n');
 }
 

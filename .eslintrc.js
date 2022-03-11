@@ -6,7 +6,6 @@ module.exports = {
   plugins: ['import', '@typescript-eslint'],
   root: true,
   rules: {
-    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-namespace': 'off',
   },
 };

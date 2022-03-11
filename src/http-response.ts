@@ -5,5 +5,5 @@ export interface HttpResponse {
   statusCode: number;
   statusMessage: string;
   headers: IncomingHttpHeaders;
-  data: any;
+  data: string;
 }

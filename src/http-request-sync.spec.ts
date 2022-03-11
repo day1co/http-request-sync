@@ -8,5 +8,11 @@ describe('http-request-sync', () => {
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
+    it('should do GET via https', () => {
+      const TEST_URL = 'https://httpbin.org/get';
+      const res = httpRequestSync(TEST_URL);
+      const data = JSON.parse(res.data);
+      expect(data.url).toBe(TEST_URL);
+    });
   });
 });

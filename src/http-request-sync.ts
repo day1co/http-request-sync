@@ -19,7 +19,8 @@ export function httpRequestSync(options: string | URL | RequestOptions): HttpRes
   const int32 = new Int32Array(shared);
   new Worker(
     `
-const { request } = require('http');
+const http = require('http');
+const https = require('https');
 const { workerData: { shared, port, options } } = require('worker_threads');
 
 function log(...args) {
@@ -42,9 +43,7 @@ function reject(error) {
   notify();
 }
 
-log(options);
-
-const req = request(options, (res) => {
+function callback(res) {
   log('statusCode:', res.statusCode);
   log('headers:', res.headers);
   res.setEncoding('utf8');
@@ -59,7 +58,16 @@ const req = request(options, (res) => {
   res.on('end', () => {
     return resolve(res, data);
   });
-});
+}
+
+log(options);
+
+const isHttps =
+  (typeof options === 'string' && options.startsWith('https')) ||
+  (typeof options === 'object' && options.protocol === 'https');
+
+const req = isHttps ? https.request(options, callback) : http.request(options, callback);
+
 req.on('error', (error) => {
   log('error!', error);
   return reject(error);

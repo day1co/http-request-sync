@@ -1,6 +1,6 @@
 {
   "name": "@day1co/http-request-sync",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "quick and dirty synchoronous wrapper of http.request",
   "author": "Day1Company",
   "license": "MIT",
@@ -30,7 +30,7 @@
     "@types/node": "^17.0.21",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/parser": "^5.14.0",
-    "eslint": "^8.10.0",
+    "eslint": "^8.11.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",

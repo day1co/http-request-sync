@@ -1,7 +1,6 @@
-import { MessageChannel, receiveMessageOnPort, Worker } from 'worker_threads';
 import type { RequestOptions } from 'http';
-import type { URL } from 'url';
 import type { HttpResponse } from './http-response';
+import { MessageChannel, receiveMessageOnPort, Worker } from 'worker_threads';
 
 function log(...args: Array<unknown>) {
   process.stdout.write('[HttpRequestSync] ' + args.map((it) => JSON.stringify(it)).join() + '\n');
@@ -17,6 +16,13 @@ export function httpRequestSync(options: string | URL | RequestOptions): HttpRes
   const { port1: localPort, port2: workerPort } = new MessageChannel();
   const shared = new SharedArrayBuffer(4);
   const int32 = new Int32Array(shared);
+
+  // serialize URL instance into url string to pass to worker
+  // see https://nodejs.org/api/worker_threads.html#workerworkerdata
+  if (options instanceof URL) {
+    options = options.href;
+  }
+
   new Worker(
     `
 const http = require('http');
@@ -43,7 +49,15 @@ function reject(error) {
   notify();
 }
 
-function callback(res) {
+log(options, typeof options, options instanceof URL);
+
+const isHttps = 
+  (typeof options === 'string' && options.startsWith('https:')) ||
+  // (options instanceof URL && options.protocol === 'https') || // never!!
+  (typeof options === 'object' && (options.port === 443 || options.protocol === 'https:'));
+const request = isHttps ? https.request : http.request;
+
+const req = request(options, (res) => {
   log('statusCode:', res.statusCode);
   log('headers:', res.headers);
   res.setEncoding('utf8');
@@ -58,18 +72,10 @@ function callback(res) {
   res.on('end', () => {
     return resolve(res, data);
   });
-}
-
-log(options);
-
-const isHttps =
-  (typeof options === 'string' && options.startsWith('https')) ||
-  (typeof options === 'object' && options.protocol === 'https');
-
-const req = isHttps ? https.request(options, callback) : http.request(options, callback);
+});
 
 req.on('error', (error) => {
-  log('error!', error);
+  log('error!', error, options, typeof options, options instanceof URL);
   return reject(error);
 });
 req.on('timeout', () => {

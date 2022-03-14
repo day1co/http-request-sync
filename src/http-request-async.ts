@@ -1,7 +1,6 @@
-import type { IncomingMessage, RequestOptions } from 'http';
 import http from 'http';
 import https from 'https';
-import type { URL } from 'url';
+import type { IncomingMessage, RequestOptions } from 'http';
 import type { HttpResponse } from './http-response';
 
 function log(...args: Array<unknown>) {
@@ -11,13 +10,15 @@ function log(...args: Array<unknown>) {
 /** minimal version to compare with `httpRequestSync()` */
 export async function httpRequestAsync(options: string | URL | RequestOptions): Promise<HttpResponse> {
   return new Promise<HttpResponse>((resolve, reject) => {
-    log(options);
+    log(options, typeof options, options instanceof URL);
 
     const isHttps =
-      (typeof options === 'string' && options.startsWith('https')) ||
-      (typeof options === 'object' && options.protocol === 'https');
+      (typeof options === 'string' && options.startsWith('https:')) ||
+      (options instanceof URL && options.protocol === 'https') ||
+      (typeof options === 'object' && (options.port === 443 || options.protocol === 'https:'));
+    const request = isHttps ? https.request : http.request;
 
-    function callback(res: IncomingMessage) {
+    const req = request(options, (res: IncomingMessage) => {
       log('statusCode:', res.statusCode);
       log('headers:', res.headers);
       res.setEncoding('utf8');
@@ -33,12 +34,10 @@ export async function httpRequestAsync(options: string | URL | RequestOptions): 
         const { statusCode, statusMessage, headers } = res;
         return resolve({ data, statusCode: statusCode ?? 0, statusMessage: statusMessage ?? '', headers });
       });
-    }
-
-    const req = isHttps ? https.request(options, callback) : http.request(options, callback);
+    });
 
     req.on('error', (error) => {
-      log('error!', error);
+      log('error!', error, options, typeof options, options instanceof URL);
       return reject(error);
     });
     req.on('timeout', () => {

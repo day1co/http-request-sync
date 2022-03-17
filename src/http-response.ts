@@ -6,4 +6,13 @@ export interface HttpResponse {
   statusMessage: string;
   headers: IncomingHttpHeaders;
   data: string;
+  error?: HttpErrorResponse;
+}
+
+export interface HttpErrorResponse {
+  errno: number;
+  code: string;
+  syscall: string;
+  address?: string;
+  port?: number;
 }

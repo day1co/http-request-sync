@@ -51,5 +51,11 @@ describe('http-request-sync', () => {
       const res = httpRequestSync(TEST_URL);
       expect(res.statusCode).toBe(404);
     });
+    it('should fail with invalid protocol', () => {
+      const TEST_URL = 'htt://httpbin.org/get';
+      const res = httpRequestSync(TEST_URL);
+      expect(res.statusCode).toBeUndefined();
+      expect(res).toHaveProperty('error');
+    });
   });
 });

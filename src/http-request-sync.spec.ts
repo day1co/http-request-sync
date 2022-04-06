@@ -9,9 +9,9 @@ describe('http-request-sync', () => {
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
-    it('should do GET with URL', async () => {
+    it('should do GET with URL', () => {
       const TEST_URL = 'http://httpbin.org/get';
-      const res = await httpRequestSync(new URL(TEST_URL));
+      const res = httpRequestSync(new URL(TEST_URL));
       expect(res.statusCode).toBe(200);
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
@@ -28,21 +28,21 @@ describe('http-request-sync', () => {
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
-    it('should do GET with URL via https', async () => {
+    it('should do GET with URL via https', () => {
       const TEST_URL = 'https://httpbin.org/get';
-      const res = await httpRequestSync(new URL(TEST_URL));
+      const res = httpRequestSync(new URL(TEST_URL));
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
-    it('should do GET with options.port via https', async () => {
+    it('should do GET with options.port via https', () => {
       const TEST_URL = 'https://httpbin.org/get';
-      const res = await httpRequestSync({ host: 'httpbin.org', path: '/get', port: 443 });
+      const res = httpRequestSync({ host: 'httpbin.org', path: '/get', port: 443 });
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
-    it('should do GET with options.protocol via https', async () => {
+    it('should do GET with options.protocol via https', () => {
       const TEST_URL = 'https://httpbin.org/get';
-      const res = await httpRequestSync({ host: 'httpbin.org', path: '/get', protocol: 'https:' });
+      const res = httpRequestSync({ host: 'httpbin.org', path: '/get', protocol: 'https:' });
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });

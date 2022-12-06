@@ -2,8 +2,12 @@ import type { RequestOptions } from 'http';
 import type { HttpResponse } from './http-response';
 import { MessageChannel, receiveMessageOnPort, Worker } from 'worker_threads';
 
+const logEnabled = process.env.HTTP_REQUEST_SYNC_LOG_ENABLED;
+
 function log(...args: Array<unknown>) {
-  process.stdout.write('[HttpRequestSync] ' + args.map((it) => JSON.stringify(it)).join() + '\n');
+  if (logEnabled) {
+    process.stdout.write('[HttpRequestSync] ' + args.map((it) => JSON.stringify(it)).join() + '\n');
+  }
 }
 
 /**

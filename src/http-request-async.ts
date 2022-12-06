@@ -3,8 +3,12 @@ import https from 'https';
 import type { IncomingMessage, RequestOptions } from 'http';
 import type { HttpResponse } from './http-response';
 
+const logEnabled = process.env.HTTP_REQUEST_SYNC_LOG_ENABLED;
+
 function log(...args: Array<unknown>) {
-  process.stdout.write('[HttpRequestAsync] ' + args.map((it) => JSON.stringify(it)).join() + '\n');
+  if (logEnabled) {
+    process.stdout.write('[HttpRequestAsync] ' + args.map((it) => JSON.stringify(it)).join() + '\n');
+  }
 }
 
 /** minimal version to compare with `httpRequestSync()` */

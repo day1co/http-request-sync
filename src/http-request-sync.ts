@@ -31,10 +31,12 @@ export function httpRequestSync(options: string | URL | RequestOptions): HttpRes
     `
 const http = require('http');
 const https = require('https');
-const { workerData: { shared, port, options } } = require('worker_threads');
+const { workerData: { logEnabled, shared, port, options } } = require('worker_threads');
 
 function log(...args) {
-  process.stdout.write('[HttpRequestSync:worker] ' + args.map((it) => JSON.stringify(it)).join() + String.fromCharCode(10));
+  if (logEnabled) {
+    process.stdout.write('[HttpRequestSync:worker] ' + args.map((it) => JSON.stringify(it)).join() + String.fromCharCode(10));
+  }
 }
 
 function notify() {
@@ -101,7 +103,7 @@ try {
   `,
     {
       eval: true,
-      workerData: { shared, port: workerPort, options },
+      workerData: { logEnabled, shared, port: workerPort, options },
       transferList: [workerPort],
     }
   );

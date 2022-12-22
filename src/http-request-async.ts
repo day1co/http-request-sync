@@ -3,7 +3,8 @@ import https from 'https';
 import type { IncomingMessage, RequestOptions } from 'http';
 import type { HttpResponse } from './http-response';
 
-const logEnabled = process.env.HTTP_REQUEST_SYNC_LOG_ENABLED;
+const logEnabled =
+  !process.env.HTTP_REQUEST_SYNC_LOG_ENABLED || process.env.HTTP_REQUEST_SYNC_LOG_ENABLED === 'false' ? false : true;
 
 function log(...args: Array<unknown>) {
   if (logEnabled) {

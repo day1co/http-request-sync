@@ -1,9 +1,11 @@
 import type { RequestOptions } from 'http';
+import { BooleanUtil } from '@day1co/pebbles';
 import type { HttpResponse } from './http-response';
 import { MessageChannel, receiveMessageOnPort, Worker } from 'worker_threads';
 
-const logEnabled =
-  !process.env.HTTP_REQUEST_SYNC_LOG_ENABLED || process.env.HTTP_REQUEST_SYNC_LOG_ENABLED === 'false' ? false : true;
+const logEnabled = process.env.HTTP_REQUEST_SYNC_LOG_ENABLED
+  ? BooleanUtil.valueOf(process.env.HTTP_REQUEST_SYNC_LOG_ENABLED)
+  : false;
 
 function log(...args: Array<unknown>) {
   if (logEnabled) {

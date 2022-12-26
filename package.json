@@ -25,6 +25,9 @@
     "test": "jest --coverage --forceExit",
     "watch": "tsc -w"
   },
+  "dependencies": {
+    "@day1co/pebbles": "~3.1.35"
+  },
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.21",

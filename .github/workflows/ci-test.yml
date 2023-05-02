@@ -33,9 +33,13 @@ jobs:
         env:
           NODE_ENV: dev
           CI: true
-      - name: Http-Request-Sync Test
-        run: npm run test:all
+      - name: Load mock server
+        run: npm run mock-server
         env:
           NODE_ENV: test
           NODE_TLS_REJECT_UNAUTHORIZED: '0'
+      - name: Http-Request-Sync Test
+        run: npm run test
+        env:
+          NODE_ENV: test
           CI: true

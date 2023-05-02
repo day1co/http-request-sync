@@ -25,7 +25,7 @@
     "test": "jest --coverage --forceExit",
     "test:target": "jest --forceExit --ci --runInBand --detectOpenHandles",
     "watch": "tsc -w",
-    "mock-server": "node ./lib/mock-server"
+    "mock-server": "node ./mock-server"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",

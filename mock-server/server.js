@@ -1,18 +1,14 @@
-import { Worker } from 'worker_threads';
+const { Worker } = require('worker_threads');
 
 const logEnabled = process.env.MOCK_SERVER_LOG_ENABLED;
 
-function log(...args: Array<unknown>) {
+function log(...args) {
   if (logEnabled) {
     process.stdout.write('[MockServer] ' + args.map((it) => JSON.stringify(it)).join() + '\n');
   }
 }
 
-interface HttpsOptions {
-  key: Buffer | string;
-  cert: Buffer | string;
-}
-export function startMockServer(options?: HttpsOptions): void {
+const startMockServer = (options) => {
   const worker = new Worker(
     `
    
@@ -73,4 +69,8 @@ export function startMockServer(options?: HttpsOptions): void {
   worker.on('error', (err) => {
     log(`Error occured on Worker config server : ${err.message}, stack = ${err.stack} `);
   });
-}
+};
+
+module.exports = {
+  startMockServer,
+};

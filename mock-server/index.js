@@ -1,6 +1,6 @@
-import { startMockServer } from './server';
+const { startMockServer } = require('./server');
 
-import mkcert from 'mkcert';
+const mkcert = require('mkcert');
 (async () => {
   // create a certificate authority
   const ca = await mkcert.createCA({

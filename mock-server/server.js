@@ -13,7 +13,7 @@ const startMockServer = (options) => {
     `
    
     const PORT_HTTP = 8888;
-    const PORT_HTTPS = 443;
+    const PORT_HTTPS = 8889;
     const http = require('http');
     const https = require('https');
     const { workerData: { options } } = require('worker_threads');

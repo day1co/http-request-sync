@@ -24,6 +24,7 @@
     "start": "npm run serve",
     "test": "jest --coverage --forceExit",
     "test:target": "jest --forceExit --ci --runInBand --detectOpenHandles",
+    "test:all": "npm-run-all --parallel mock-server test",
     "watch": "tsc -w",
     "mock-server": "node ./mock-server"
   },

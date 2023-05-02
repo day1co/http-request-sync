@@ -40,7 +40,7 @@ describe('http-request-async', () => {
       expect(res.statusCode).toBe(404);
     });
     it('should do GET via https', async () => {
-      const TEST_URL = 'https://127.0.0.1/get';
+      const TEST_URL = 'https://127.0.0.1:8889/get';
       const res = await httpRequestAsync(TEST_URL);
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
@@ -52,8 +52,9 @@ describe('http-request-async', () => {
       const options = {
         hostname: '127.0.0.1',
         path: '/post',
-        port: 443,
+        port: 8889,
         method: 'POST',
+        protocol: 'https:',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -62,30 +63,32 @@ describe('http-request-async', () => {
       expect(res.statusCode).toBe(200);
     });
     it('should do GET with URL via https', async () => {
-      const TEST_URL = 'https://127.0.0.1/get';
+      const TEST_URL = 'https://127.0.0.1:8889/get';
       const res = await httpRequestAsync(new URL(TEST_URL));
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
     it('should do GET with options.port via https', async () => {
-      const TEST_URL = 'https://127.0.0.1/get';
-      const res = await httpRequestAsync({ host: '127.0.0.1', path: '/get', method: 'GET', port: 443 });
+      // mock-server not support 443
+      const TEST_URL = 'https://httpbin.org/get';
+      const res = await httpRequestAsync({ host: 'httpbin.org', path: '/get', method: 'GET', port: 443 });
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
     it('should do GET with options.protocol via https', async () => {
-      const TEST_URL = 'https://127.0.0.1/get';
+      const TEST_URL = 'https://127.0.0.1:8889/get';
       const res = await httpRequestAsync({
-        host: '127.0.0.1',
+        hostname: '127.0.0.1',
         path: '/get',
         method: 'GET',
+        port: 8889,
         protocol: 'https:',
       });
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
     it('should do GET 404 via https', async () => {
-      const TEST_URL = 'https://127.0.0.1/status/404';
+      const TEST_URL = 'https://127.0.0.1:8889/status/404';
       const res = await httpRequestAsync(TEST_URL);
       expect(res.statusCode).toBe(404);
     });

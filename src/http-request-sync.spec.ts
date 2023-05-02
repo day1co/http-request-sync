@@ -38,37 +38,44 @@ describe('http-request-sync', () => {
       expect(res.statusCode).toBe(404);
     });
     it('should do GET via https', () => {
-      const TEST_URL = 'https://127.0.0.1/get';
+      const TEST_URL = 'https://127.0.0.1:8889/get';
       const res = httpRequestSync(TEST_URL);
       expect(res.statusCode).toBe(200);
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
     it('should do GET with URL via https', () => {
-      const TEST_URL = 'https://127.0.0.1/get';
+      const TEST_URL = 'https://127.0.0.1:8889/get';
       const res = httpRequestSync(new URL(TEST_URL));
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
     it('should do GET with options.port via https', () => {
-      const TEST_URL = 'https://127.0.0.1/get';
-      const res = httpRequestSync({ host: '127.0.0.1', path: '/get', port: 443 });
+      // mock-server not support 443
+      const TEST_URL = 'https://httpbin.org/get';
+      const res = httpRequestSync({ host: 'httpbin.org', path: '/get', method: 'GET', port: 443 });
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
     it('should do GET with options.protocol via https', () => {
-      const TEST_URL = 'https://127.0.0.1/get';
-      const res = httpRequestSync({ host: '127.0.0.1', path: '/get', protocol: 'https:' });
+      const TEST_URL = 'https://127.0.0.1:8889/get';
+      const res = httpRequestSync({
+        hostname: '127.0.0.1',
+        path: '/get',
+        method: 'GET',
+        port: 8889,
+        protocol: 'https:',
+      });
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
     it('should do GET 404 via https', () => {
-      const TEST_URL = 'https://127.0.0.1/status/404';
+      const TEST_URL = 'https://127.0.0.1:8889/status/404';
       const res = httpRequestSync(TEST_URL);
       expect(res.statusCode).toBe(404);
     });
     it('should fail with invalid protocol', () => {
-      const TEST_URL = 'htt://127.0.0.1/get';
+      const TEST_URL = 'htt://127.0.0.1:8889/get';
       const res = httpRequestSync(TEST_URL);
       expect(res.statusCode).toBeUndefined();
       expect(res).toHaveProperty('error');

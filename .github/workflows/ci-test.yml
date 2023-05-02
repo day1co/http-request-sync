@@ -28,11 +28,6 @@ jobs:
       - name: Install Dependencies
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
-      - name: Load mock server
-        run: npm run mock-server
-        env:
-          NODE_ENV: test
-          NODE_TLS_REJECT_UNAUTHORIZED: '0'
       - name: Lint Test
         run: npm run lint
         env:
@@ -42,4 +37,5 @@ jobs:
         run: npm run test
         env:
           NODE_ENV: test
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
           CI: true

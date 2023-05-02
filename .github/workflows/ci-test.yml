@@ -41,5 +41,6 @@ jobs:
       - name: Http-Request-Sync Test
         run: npm run test
         env:
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
           NODE_ENV: test
           CI: true

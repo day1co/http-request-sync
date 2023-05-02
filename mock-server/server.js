@@ -55,13 +55,6 @@ const startMockServer = (options) => {
     httpsServer.listen(PORT_HTTPS, () => {
         log('Ready on https://localhost:' + PORT_HTTPS);
     })
-
-    // http.createServer(serverFunction).listen(PORT_HTTP, () => {
-    //   log('Ready on http://localhost:' + PORT_HTTP);
-    // });
-    // https.createServer(options, serverFunction).listen(PORT_HTTPS, () => {
-    //   log('Ready on https://localhost:' + PORT_HTTPS);
-    // });
     `,
     { eval: true, workerData: { options } }
   );

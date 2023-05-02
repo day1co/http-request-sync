@@ -5,6 +5,10 @@ import type { HttpResponse } from './http-response';
 
 const logEnabled = process.env.HTTP_REQUEST_SYNC_LOG_ENABLED;
 
+interface RequestData {
+  [key: string]: any;
+}
+
 function log(...args: Array<unknown>) {
   if (logEnabled) {
     process.stdout.write('[HttpRequestAsync] ' + args.map((it) => JSON.stringify(it)).join() + '\n');
@@ -12,7 +16,10 @@ function log(...args: Array<unknown>) {
 }
 
 /** minimal version to compare with `httpRequestSync()` */
-export async function httpRequestAsync(options: string | URL | RequestOptions): Promise<HttpResponse> {
+export async function httpRequestAsync(
+  options: string | URL | RequestOptions,
+  requestData?: string | RequestData
+): Promise<HttpResponse> {
   return new Promise<HttpResponse>((resolve, reject) => {
     log(options, typeof options, options instanceof URL);
 
@@ -52,6 +59,15 @@ export async function httpRequestAsync(options: string | URL | RequestOptions): 
       log('uncaughtException!', error);
       return reject(error);
     });
+    if (requestData && typeof requestData === 'string') {
+      req.write(requestData, () => {
+        log('write string requestData', requestData);
+      });
+    } else if (requestData && typeof requestData === 'object') {
+      req.write(JSON.stringify(requestData), () => {
+        log('write object requestData', requestData);
+      });
+    }
     req.end(() => {
       log('end!');
     });

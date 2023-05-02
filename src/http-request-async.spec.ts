@@ -1,52 +1,91 @@
 import { httpRequestAsync } from './http-request-async';
 
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 describe('http-request-async', () => {
   describe('httpRequestAsync', () => {
     it('should do GET', async () => {
-      const TEST_URL = 'http://httpbin.org/get';
+      const TEST_URL = 'http://127.0.0.1:8888/get';
       const res = await httpRequestAsync(TEST_URL);
       expect(res.statusCode).toBe(200);
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
     it('should do GET with URL', async () => {
-      const TEST_URL = 'http://httpbin.org/get';
+      const TEST_URL = 'http://127.0.0.1:8888/get';
       const res = await httpRequestAsync(new URL(TEST_URL));
       expect(res.statusCode).toBe(200);
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
+    it('should do POST with DATA', async () => {
+      const postData = {
+        msg: 'Hello World!',
+      };
+      const options = {
+        hostname: '127.0.0.1',
+        path: '/post',
+        port: 8888,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const res = await httpRequestAsync(options, postData);
+      expect(res.statusCode).toBe(200);
+    });
     it('should do GET 404', async () => {
-      const TEST_URL = 'http://httpbin.org/status/404';
+      const TEST_URL = 'http://127.0.0.1:8888/status/404';
       const res = await httpRequestAsync(TEST_URL);
       expect(res.statusCode).toBe(404);
     });
     it('should do GET via https', async () => {
-      const TEST_URL = 'https://httpbin.org/get';
+      const TEST_URL = 'https://127.0.0.1/get';
       const res = await httpRequestAsync(TEST_URL);
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
+    it('should do POST with DATA via https', async () => {
+      const postData = {
+        msg: 'Hello World!',
+      };
+      const options = {
+        hostname: '127.0.0.1',
+        path: '/post',
+        port: 443,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const res = await httpRequestAsync(options, postData);
+      expect(res.statusCode).toBe(200);
+    });
     it('should do GET with URL via https', async () => {
-      const TEST_URL = 'https://httpbin.org/get';
+      const TEST_URL = 'https://127.0.0.1/get';
       const res = await httpRequestAsync(new URL(TEST_URL));
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
     it('should do GET with options.port via https', async () => {
-      const TEST_URL = 'https://httpbin.org/get';
-      const res = await httpRequestAsync({ host: 'httpbin.org', path: '/get', port: 443 });
+      const TEST_URL = 'https://127.0.0.1/get';
+      const res = await httpRequestAsync({ host: '127.0.0.1', path: '/get', method: 'GET', port: 443 });
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
     it('should do GET with options.protocol via https', async () => {
-      const TEST_URL = 'https://httpbin.org/get';
-      const res = await httpRequestAsync({ host: 'httpbin.org', path: '/get', protocol: 'https:' });
+      const TEST_URL = 'https://127.0.0.1/get';
+      const res = await httpRequestAsync({
+        host: '127.0.0.1',
+        path: '/get',
+        method: 'GET',
+        protocol: 'https:',
+      });
       const data = JSON.parse(res.data);
       expect(data.url).toBe(TEST_URL);
     });
     it('should do GET 404 via https', async () => {
-      const TEST_URL = 'https://httpbin.org/status/404';
+      const TEST_URL = 'https://127.0.0.1/status/404';
       const res = await httpRequestAsync(TEST_URL);
       expect(res.statusCode).toBe(404);
     });

@@ -4,6 +4,10 @@ import { MessageChannel, receiveMessageOnPort, Worker } from 'worker_threads';
 
 const logEnabled = process.env.HTTP_REQUEST_SYNC_LOG_ENABLED;
 
+interface RequestData {
+  [key: string]: any;
+}
+
 function log(...args: Array<unknown>) {
   if (logEnabled) {
     process.stdout.write('[HttpRequestSync] ' + args.map((it) => JSON.stringify(it)).join() + '\n');
@@ -15,8 +19,12 @@ function log(...args: Array<unknown>) {
  * @see https://nodejs.org/api/worker_threads.html
  * @see https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Atomics
  */
-export function httpRequestSync(options: string | URL | RequestOptions): HttpResponse {
+export function httpRequestSync(
+  options: string | URL | RequestOptions,
+  requestData?: string | RequestData
+): HttpResponse {
   log(options);
+  log(requestData);
   const { port1: localPort, port2: workerPort } = new MessageChannel();
   const shared = new SharedArrayBuffer(4);
   const int32 = new Int32Array(shared);
@@ -31,7 +39,7 @@ export function httpRequestSync(options: string | URL | RequestOptions): HttpRes
     `
 const http = require('http');
 const https = require('https');
-const { workerData: { logEnabled, shared, port, options } } = require('worker_threads');
+const { workerData: { logEnabled, shared, port, options, requestData } } = require('worker_threads');
 
 function log(...args) {
   if (logEnabled) {
@@ -94,6 +102,15 @@ try {
     log('uncaughtException!', error);
     return reject(error);
   });
+  if (requestData && typeof requestData === 'string') {
+    req.write(requestData, () => {
+      log('write string requestData', requestData);
+    });
+  } else if (requestData && typeof requestData === 'object') {
+    req.write(JSON.stringify(requestData), () => {
+      log('write object requestData', requestData);
+    });
+  }
   req.end(() => {
     log('end!');
   });
@@ -103,7 +120,7 @@ try {
   `,
     {
       eval: true,
-      workerData: { logEnabled, shared, port: workerPort, options },
+      workerData: { logEnabled, shared, port: workerPort, options, requestData },
       transferList: [workerPort],
     }
   );

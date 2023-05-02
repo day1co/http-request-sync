@@ -26,7 +26,7 @@
     "test:target": "jest --forceExit --ci --runInBand --detectOpenHandles",
     "test:all": "npm-run-all --parallel mock-server test",
     "watch": "tsc -w",
-    "mock-server": "node ./mock-server"
+    "mock-server": "node ./mock-server &"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",

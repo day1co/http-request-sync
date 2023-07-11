@@ -1,6 +1,6 @@
 {
   "name": "@day1co/http-request-sync",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "quick and dirty synchronous wrapper of http.request",
   "author": "Day1Company",
   "license": "MIT",

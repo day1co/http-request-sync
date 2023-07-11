@@ -3,8 +3,6 @@ name: ci-test
 on:
   pull_request:
     branches:
-      - '*/*'
-      - develop
       - main
 
 jobs:
@@ -15,18 +13,18 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: npm
-          cache-dependency-path: '**/package-lock.json'
-      - name: Install Dependencies
-        if: steps.node-cache.outputs.cache-hit != 'true'
+          cache: 'npm'
+      - name: Prepare dot npmrc for Private Registry
+        run: echo //npm.pkg.github.com/:_authToken=${{ secrets.GH_TOKEN }} >> ~/.npmrc
+      - name: Install npm packages
         run: npm ci
       - name: Lint Test
         run: npm run lint
